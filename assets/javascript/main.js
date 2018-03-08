@@ -29,7 +29,7 @@ $(document).ready(function (){
     });
 
     //Listen to the on click event on any button being displayed.
-    $(document).on("click", function (e) {
+    $(document).on("click", "button", function (e) {
         $("#content").empty();
         query = e.target.textContent;
         queryURL = `https://api.giphy.com/v1/gifs/search?api_key=SD0M60BqZZdOFGH7yLnrDxkB0hPcjY2g&q=${query}&limit=${limit}&offset=0&rating=&lang=en`;
@@ -52,7 +52,7 @@ $(document).ready(function (){
                     <img src=${item.images.fixed_height_still.url} width=${newImgWidth} height="125" value=${index} />
                     </div>`);
             });
-            var responseAPI = res;
+            responseAPI = res;
         });
     }
 
