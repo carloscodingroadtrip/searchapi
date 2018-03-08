@@ -11,15 +11,15 @@ $(document).ready(function (){
     }
 
     //Listen to Enter (key), then create a new button and also call the searchAPI function
-    document.addEventListener("keydown", function(event) {  //listen for keydown "ENTER"
-        if((event.which === 13)) {
-            event.preventDefault();
+    document.addEventListener("keydown", function(e) {  //listen for keydown "ENTER"
+        if((e.which === 13)) {
+            e.preventDefault();
             newBtn = $('#user-search').val(); //Get the value from the input field
             //if value was NOT empty, then
             if (newBtn !== '') {
                 $('#displaybuttons').append(`<button class="btn btn-warning">${newBtn}</button>`); //add the button
                 $('input').val(''); //Clear the user input field.
-                $('#content').remove(); //remove any gifs with the class 'gif'
+                $('#content').empty(); //remove any gifs with the class 'gif'
                 //Build the queryURL
                 queryURL = `https://api.giphy.com/v1/gifs/search?api_key=SD0M60BqZZdOFGH7yLnrDxkB0hPcjY2g&q=${newBtn}&limit=${limit}&offset=0&rating=&lang=en`;
                 //Call the API with our query
@@ -29,8 +29,8 @@ $(document).ready(function (){
     });
 
     //Listen to the on click event on any button being displayed.
-    $(document).on('click', 'button', function (e) {
-        $('#content').empty();
+    $(document).on("click", function (e) {
+        $("#content").empty();
         query = e.target.textContent;
         queryURL = `https://api.giphy.com/v1/gifs/search?api_key=SD0M60BqZZdOFGH7yLnrDxkB0hPcjY2g&q=${query}&limit=${limit}&offset=0&rating=&lang=en`;
         searchAPI(queryURL);
@@ -41,27 +41,23 @@ $(document).ready(function (){
         $.ajax({
             url: queryURL,
             method: 'GET'
-        }).then((res) => {
+        }).then(function (res) {
             //Allocate the response to a global variable called responseAPI
-            responseAPI = res;
-            $.each(res.data, (index, item) => {
+            $.each(res.data, function (index, item) {
                 imgHt = item.images.fixed_height_still.height;
                 imgWd = item.images.fixed_height_still.width;
                 xAxis = 125 / imgHt;
                 newImgWidth = xAxis * imgWd;
-                 $('#content')
-                    .append(
-                    `<div class="gif">
-                        <p>Rating: ${item.rating.toUpperCase()}</p>
-                        <img src=${item.images.fixed_height_still.url} width=${newImgWidth}
-                        height="125" value=${index}>
+                 $("#content").append(`<div class="gif"><p>Rating: ${item.rating.toUpperCase()}</p>
+                    <img src=${item.images.fixed_height_still.url} width=${newImgWidth} height="125" value=${index} />
                     </div>`);
             });
+            var responseAPI = res;
         });
     }
 
     //Below will grab the onClick on any of our images being displayed.
-    $("#content").on('click', "img" , function() {
+    $("#content").on("click", "img" , function() {
         var clickedImg = $(this), //Get the image that was clicked
             clickedImgIndex = clickedImg.attr("value"); //Get the value attriburte
 
@@ -72,5 +68,4 @@ $(document).ready(function (){
             clickedImg.attr("src", responseAPI.data[clickedImgIndex].images.fixed_height_still.url);
         }
     });
-
 });
